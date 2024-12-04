@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# npm package lock
+package-lock.json
+
+# Vercel specific files (optional)
+.vercel/
+
+# Uploads directory (for user-uploaded files or temporary files)
+uploads/
+
+# config/db.js and other sensitive files (if not used for versioning)
+# You may choose to ignore this if you don't want to expose it publicly (for example, if db.js contains sensitive credentials).
+# But this can also be kept if you prefer to version it with caution.
+config/db.js
+
+# Ignore temporary or build files generated during deployment
+dist/
+build/
+
+# .env files for local development environment
+.env.local
+.env.development
+.env.production
