@@ -23,7 +23,7 @@ router.post('/login', async (req, res) => {
     // Generate JWT token
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '24h' });
 
-    res.json({ token, user: { username: user.username, email: user.email } });
+    res.json({ token, user: {_id:user._id, username: user.username, email: user.email, createdAt:user.createdAt,updatedAt:user.updatedAt } });
   } catch (err) {
     console.log(err);
     
@@ -57,7 +57,7 @@ router.post("/register", async (req, res) => {
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '24h' });
 
-    res.json({ token, user: { username: newUser.username, email: newUser.email } });
+    res.json({ token, user: {_id:newUser._id, username: newUser.username, email: newUser.email, createdAt:newUser.createdAt,updatedAt:newUser.updatedAt } });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ message: "Internal server error" });
