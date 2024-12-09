@@ -1,45 +1,46 @@
 const express = require('express');
 const uploadPost = require('./multerConfigPost');
-const { Post } = require('../models'); // Import models
+const { Post } = require('../models');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
-// create posts
+// Create posts
 router.post(
   '/create',
-  authMiddleware, // Ensure the user is authenticated
+  authMiddleware, // Ensure user is authenticated
   uploadPost.single('image'), // Use multer to handle the file upload
-  async (req, res) => {
+  async (req, res, next) => {
+    console.log('File received:', req.file);  // Log the file to check if it is in `req.file`
     const { title, description } = req.body;
 
-    // Validate title and description
     if (!title || !description) {
       return res.status(400).json({ message: 'Title and description are required.' });
     }
 
     try {
-      // Create a new post
-      const newPost = new Post({
-        title,
-        description,
-        image: req.file ? req.file.filename : null, // Save the uploaded image filename
-        createdBy: req.user.id, // Use user ID from the token
-        createdAt: new Date(),
-      });
+      if (req.file) {
+        const newPost = new Post({
+          title,
+          description,
+          image: req.file.path, // Path from Cloudinary or local upload
+          createdBy: req.user.id,
+          createdAt: new Date(),
+        });
 
-      // Save the post to the database
-      const savedPost = await newPost.save();
-
-      res.status(201).json({
-        message: 'Post created successfully',
-      });
+        await newPost.save();
+        return res.status(201).json({
+          message: 'Post created successfully',
+          post: newPost,
+        });
+      } else {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+      console.error('Error occurred:', error);
+      return res.status(500).json({ message: 'Server error' });
     }
   }
 );
-
 
 //get posts of perticular user
 router.get('/',authMiddleware, async (req, res) => {
@@ -56,5 +57,7 @@ router.get('/',authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
 
 module.exports = router;

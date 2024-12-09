@@ -1,27 +1,25 @@
-// multerConfigPost.js
 const multer = require('multer');
-const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-// Set up storage configuration for post image upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Specify the upload folder
-  },
-  filename: (req, file, cb) => {
-    const fileName = 'post_' + req.user.id + '_' + Date.now() + path.extname(file.originalname);  // Post image naming convention
-    cb(null, fileName);
-  }
+// Cloudinary configuration using the URL
+cloudinary.config({
+  cloudinary_url: process.env.CLOUDINARY_URL, // Use Cloudinary_URL from environment variables
 });
 
-// File filter to only allow image files (jpeg, png, jpg)
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
-    cb(null, true); // Accept the file
-  } else {
-    cb(new Error('Only image files are allowed'), false); // Reject the file
-  }
-};
+// Multer storage configuration for Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'posts', // Specify the folder name in Cloudinary
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'], // Allowed image formats
+    transformation: [
+      { width: 1080, height: 1080, crop: 'fill', quality: 'auto', fetch_format: 'auto' },
+    ],
+  },
+});
 
-const uploadPost = multer({ storage, fileFilter });
+// Multer upload middleware
+const uploadPost = multer({ storage: storage });
 
 module.exports = uploadPost;

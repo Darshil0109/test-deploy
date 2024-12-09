@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const { User } = require('../models'); // Import models
 const router = express.Router();
 const upload = require('./multerConfig'); 
+const cloudinary = require('cloudinary').v2;
 // Get all users
 router.get('/', async (req, res) => {
   try {
@@ -28,7 +29,7 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', upload.single('profilePicture'), async (req, res) => {
   const { username, email, password, bio } = req.body;
-  const profilePicture = req.file ? req.file.filename : null;
+  const profilePicture = req.file ? req.file.path : null; // Check if file is uploaded
 
   // Basic validation
   if (!username || !email) {
@@ -54,7 +55,7 @@ router.put('/:id', upload.single('profilePicture'), async (req, res) => {
       return res.status(400).json({ message: 'Username or email already exists' });
     }
 
-    // Update fields
+    // Prepare fields to update
     const updatedFields = {
       username,
       email,
@@ -62,11 +63,7 @@ router.put('/:id', upload.single('profilePicture'), async (req, res) => {
       updatedAt: new Date(), 
     };
 
-    // If a new profile picture is uploaded, update it
-    if (profilePicture) {
-      updatedFields.profilePicture = profilePicture;
-    }
-
+    
     // If a new password is provided, hash it and update
     if (password) {
       updatedFields.password = await bcrypt.hash(password, 10);
@@ -84,7 +81,7 @@ router.put('/:id', upload.single('profilePicture'), async (req, res) => {
       user: {
         username: updatedUser.username,
         email: updatedUser.email,
-        profilePicture: updatedUser.profilePicture,
+        profilePicture: profilePicture,
         bio: updatedUser.bio,
         createdAt: updatedUser.createdAt,
         updatedAt: updatedUser.updatedAt,
