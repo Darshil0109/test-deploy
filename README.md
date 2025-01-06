@@ -48,7 +48,7 @@ This will download and install all the libraries and packages specified in the p
    Add the following environment variables to the `.env` file:
 
    ```env
-   MONGODB_URI=mongodb://localhost:27017/# Your MongoDB URI (local or Atlas URL)
+   MONGODB_URI=mongodb://localhost:27017/ # Your MongoDB URI (local or Atlas URL)
    JWT_SECRET=your-jwt-secret  # Secret for JWT authentication
    CLOUDINARY_URL=your-cloudinary-url #create account on cloudinary and get URL from there to store images
    CORS_ORIGIN=http://localhost:3000 # Your React Url from You want to send requests (local or if you deploy your frontend)
