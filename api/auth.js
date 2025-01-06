@@ -22,7 +22,10 @@ router.post('/login', async (req, res) => {
     
     // Generate JWT token
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '24h' });
-
+    res.cookie('authToken', token, {
+      httpOnly: true,  // Prevents access from JavaScript (for security)
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),  // Set expiration date (24 hours)
+    });
     res.json({ token, user: {_id:user._id, username: user.username, email: user.email, createdAt:user.createdAt,updatedAt:user.updatedAt } });
   } catch (err) {
     console.log(err);
@@ -56,7 +59,10 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '24h' });
-
+    res.cookie('authToken', token, {
+      httpOnly: true,  // Prevents access from JavaScript (for security)
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),  // Set expiration date (24 hours)
+    });
     res.json({ token, user: {_id:newUser._id, username: newUser.username, email: newUser.email, createdAt:newUser.createdAt,updatedAt:newUser.updatedAt } });
   } catch (error) {
     console.error("Error during registration:", error);

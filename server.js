@@ -6,6 +6,7 @@ const userRoutes = require('./api/userRoutes');
 const postRoutes = require('./api/postRoutes');
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 // Load environment variables
 dotenv.config();
 
@@ -16,11 +17,13 @@ const app = express();
 connectDB();
 
 // Middleware
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
   origin: process.env.CORS_ORIGIN, // Restricting to a specific origin
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
 }));
 // Routes
 app.get('/', (req, res) => {
