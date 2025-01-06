@@ -18,7 +18,10 @@ connectDB();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN, // Restricting to a specific origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
 // Routes
 app.get('/', (req, res) => {
   res.send(`Welcome to the Darshil's API!`);
