@@ -23,7 +23,7 @@ router.post(
           title,
           description,
           image: req.file.path, // Path from Cloudinary or local upload
-          createdBy: req.user.id,
+          createdBy: req.user._id,
           createdAt: new Date(),
         });
 
@@ -45,8 +45,7 @@ router.post(
 //get posts of perticular user
 router.get('/',authMiddleware, async (req, res) => {
   try {
-    const userId = req.user.id;
-
+    const userId = req.user._id;
     // Find posts created by the user
     const posts = await Post.find({ createdBy: userId });
 
