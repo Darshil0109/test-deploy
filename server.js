@@ -20,17 +20,6 @@ connectDB();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-  origin: process.env.CORS_ORIGIN, // Restricting to a specific origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-}));
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');  // Allow all origins
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');  // Allow specific methods
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');  // Allow specific headers
-  next();
-});
 // Routes
 app.get('/', (req, res) => {
   res.send(`Welcome to the Darshil's API!`);
