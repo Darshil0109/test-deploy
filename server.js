@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: true, // Restricting to a specific origin
+  origin: '*', // Restricting to a specific origin
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
